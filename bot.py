@@ -1,31 +1,25 @@
 import os
 import re
+import json
 import telebot
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
-# ================== TOKEN ==================
+# ================= TOKEN =================
 BOT_TOKEN = os.getenv("8354054394:AAFaH11TE2p3Wht8Z7XmLo0P8p9OVKw-9B8")
 bot = telebot.TeleBot(BOT_TOKEN)
 
-# ================== GOOGLE SHEETS ==================
+# ================= GOOGLE SHEETS =================
 scope = [
     "https://spreadsheets.google.com/feeds",
     "https://www.googleapis.com/auth/drive"
 ]
-{
-  "type": "service_account",
-  "project_id": "focus-reality-488313-f9",
-  "private_key_id": "4ed26a768622ae08dde11111560cab067a20ee5a",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDXRGxH+TwUJK+B\nOwBre+7HQN7xy9tyTaD3Hzx3muQeEYUJGpYMcZ0lDEAXY4V0VrwOeHpFArveGeCJ\nk+GZrE/XKJrxX5DKY8ObrA/d1lBWNDlWN7jF50HGpCrUAvLheaWqBPBJYQEc2Tfh\nE2bk5aFPfeZQLOQ+MuYkhGkgcXOqNlKZ2itswqv1ugTdvOvhEh8/hoG6bvZ5aNvQ\nXXCgtRSu2rJ1/ol46bjQkMd+hYLjv6618B0qGpkHPKoLOGiZyqa7o3oTKD8MQ8Zt\nC2xqdU27JXYCXXVD1zk8p9sdj111zIdVLnKHmgrf5zzNR4GoZj/XPBY0Juzyf3Ow\naI4DbrJdAgMBAAECggEAEs0rF+4wzSGXIpZgpwKgDE8iKcRAWm9lS7Ayu8+PdQDa\nubzUtimGLCIxxtkuYsbgjfL/2t8uQWvJLLr5zU47evNU9Rf/sW2dPA9/I0UAp0bQ\nazNatA5KtGrKQtIvHHpfecYMppwOWNKwCryDFCLqP+MjJoWFOdmAOFhIRkkibQ9A\nhKyfrnnuNbaulQnjhBSLgNuJDbISG4VgACV/XSUNUkXw16Tu+FlwNVpNHeX4/eKJ\nhlUWUC9wmSZL5YbwjBvh8NR0se7QjsAVDFTPzmZtLNHjnwZv7DhOBqV5VNOwSwY9\nA8baDAm40s/DMw1YPh8tXPMLTUaC0lHmfsErshJ3AQKBgQD0xZ3HZWEWLryqXd4g\nKYQpH37DNCy+5p13iMuvdVigu6fOU3Ezs3az2JivF354FronxEdJDsFqVKgTyFRD\nc3WvAbgyCCwwcxPys0bmRZG1jRnC5SQAA8fYnRb4CaNwOSb8WfiFp32PNXQtU0Fs\nsmnYqUN6moI/6EXlKAUKWx9U7QKBgQDhJFSGmJKSZOoyzA8Spo6ESNyLe+v/ggBd\nxXHu2Tq10FjbTFWU3Tlj1mdCE4Ybn5plGAFaZpXLBrX+YvcxtwoY+BFRauUMBhsV\ninS69CEnVIzXvzZI8bGJGcYy8P3EJf4YOAqNCXJQhy5GRZU66SGi7NW2Pcnhxu19\nVFhQK1gVMQKBgQDPF0NeqI9zzScinTiJzZZblKITVdllyof/0mVCle3eT+ax0jc8\nnuIXV3IW8bG2uMPXUWFelnVeGTH7SsrAJrey0amd6vw4IaUG+ldKDCIzkKXzFxtW\nR9yVkJMWWFFHaZNqflSeAA9jUr5wergn1utmvA6zdHYuy74XG7zn/iCMIQKBgFG+\nch4oeVdD4rCs3HAmHyqylbjjNo2fsuhZDwPsxV9MFWcSMSSKqhKwvu8DzbZr3ZAF\nBkC/bHW5qwyA/EWFstnb/9Wy3RTfhqfsjHNwvjTcgwK2f0w+zPn9bLQEQe8c6EP8\n3P/WRTYtzsRe8U7hZIAWQ4YWqx0ZsBLINARvqFyRAoGBAJWOTg8KGhYGQJIKwQ6d\nsh7TfMyi4OJXUUq2ae0gbbCSSmQTKA3zAhwXU+pTxoxgFbd6ZZsJESlcqWCRMmGh\nAEirUZo70D0fGlSk+nI8kZpjOtGyEGAQI7ZeCwyf0R6LwJTMxuP2eU5v9QCbYbgJ\ncXiCT53TNBo4qpjmVxLujYEn\n-----END PRIVATE KEY-----\n",
-  "client_email": "bot-sheets@focus-reality-488313-f9.iam.gserviceaccount.com",
-  "client_id": "107242277645726690444",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/bot-sheets%40focus-reality-488313-f9.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-}
+
+google_creds_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS"))
+
+creds = ServiceAccountCredentials.from_json_keyfile_dict(
+    google_creds_dict, scope
+)
 
 client = gspread.authorize(creds)
 sheet = client.open("BaoCaoCaTruc").sheet1
@@ -157,5 +151,6 @@ def handle_report(message):
 if __name__ == "__main__":
     print("Bot running...")
     bot.infinity_polling()
+
 
 
