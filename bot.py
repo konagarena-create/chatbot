@@ -1,3 +1,4 @@
+import os
 import telebot
 import gspread
 import re
@@ -5,7 +6,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 # ================== TOKEN ==================
 BOT_TOKEN = "8354054394:AAFaH11TE2p3Wht8Z7XmLo0P8p9OVKw-9B8"
-bot = telebot.TeleBot(BOT_TOKEN)
+bot = telebot.TeleBot(8354054394:AAFaH11TE2p3Wht8Z7XmLo0P8p9OVKw-9B8)
 
 # ================== GOOGLE SHEETS ==================
 scope = [
@@ -152,4 +153,8 @@ def handle_report(message):
 # ================== CHẠY BOT ==================
 
 print("Bot đang chạy...")
+
 bot.polling()
+if __name__ == "__main__":
+    print("Bot running...")
+    bot.infinity_polling()
