@@ -27,9 +27,6 @@ scope = [
   "universe_domain": "googleapis.com"
 }
 
-
-)
-
 client = gspread.authorize(creds)
 sheet = client.open("BaoCaoCaTruc").sheet1
 
@@ -160,4 +157,5 @@ def handle_report(message):
 if __name__ == "__main__":
     print("Bot running...")
     bot.infinity_polling()
+
 
